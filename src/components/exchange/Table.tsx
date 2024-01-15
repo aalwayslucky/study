@@ -11,8 +11,7 @@ import { createRoot } from "react-dom/client";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { getData, globalRowData } from "./data";
-
+import { positions } from "../../atoms/myAtoms";
 import "./styles.css";
 import {
   AsyncTransactionsFlushed,
@@ -25,41 +24,42 @@ import {
 } from "ag-grid-community";
 
 const UPDATE_COUNT = 20;
-
+import { columnDefs } from "./columdefs";
+import { atom, useAtom, useAtomValue } from "jotai";
+import { Position } from "safe-cex/dist/types";
+import { NimbusTable } from "@/types";
+import { useUpdatePositions } from "@/hooks/useUpdatePositions";
 function numberCellFormatter(params: ValueFormatterParams) {
   return Math.floor(params.value)
     .toString()
     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
 }
 
-function startFeed(api: GridApi) {
-  var count = 1;
-  setInterval(() => {
-    var thisCount = count++;
-    var updatedIndexes: any = {};
-    var newItems: any[] = [];
-    for (var i = 0; i < UPDATE_COUNT; i++) {
-      // pick one index at random
-      var index = Math.floor(Math.random() * globalRowData.length);
-      // dont do same index twice, otherwise two updates for same row in one transaction
-      if (updatedIndexes[index]) {
-        continue;
-      }
-      var itemToUpdate = globalRowData[index];
-      var newItem: any = copyObject(itemToUpdate);
-      // copy previous to current value
-      newItem.previous = newItem.current;
-      // then create new current value
-      newItem.current = Math.floor(Math.random() * 100000) + 100;
-      newItems.push(newItem);
+function onUpdateSafeCex(api: GridApi, pos: Position[]) {
+  const updateRecords: NimbusTable[] = [];
+  api.forEachNode((node) => {
+    const position = node.data;
+    const symbol = position.symbol;
+    const newPosition = pos.find((p: Position) => p.symbol === symbol);
+
+    if (newPosition) {
+      updateRecords.push({
+        ...position,
+        side: newPosition.side,
+        entryPrice: newPosition.entryPrice,
+        notional: Number(newPosition.notional.toFixed(0)),
+        leverage: newPosition.leverage,
+        unrealizedPnl: Number(newPosition.unrealizedPnl.toFixed(0)),
+        contracts: newPosition.contracts,
+        liquidationPrice: newPosition.liquidationPrice,
+      });
     }
-    var resultCallback = () => {
-      console.log("transactionApplied() - " + thisCount);
-    };
-    api.applyTransactionAsync({ update: newItems }, resultCallback);
-    console.log("applyTransactionAsync() - " + thisCount);
-  }, 500);
+  });
+
+  api.applyTransactionAsync({ update: updateRecords });
 }
+
+function startFeed(api: GridApi) {}
 
 // makes a copy of the original and merges in the new values
 function copyObject(object: any) {
@@ -73,6 +73,8 @@ function copyObject(object: any) {
 }
 
 const GridExample = () => {
+  const pos = useAtomValue(positions);
+
   const gridRef = useRef<AgGridReact>(null);
   const containerStyle = useMemo(
     () => ({ width: "1000px", height: "700px" }),
@@ -80,134 +82,12 @@ const GridExample = () => {
   );
   const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
 
-  const [columnDefs] = useState<ColDef[]>([
-    // these are the row groups, so they are all hidden (they are show in the group column)
-    {
-      headerName: "Product",
-      field: "product",
-
-      hide: true,
-    },
-    {
-      headerName: "Portfolio",
-      field: "portfolio",
-
-      hide: true,
-    },
-    {
-      headerName: "Book",
-      field: "book",
-
-      hide: true,
-    },
-    { headerName: "Trade", field: "trade", width: 100 },
-    // all the other columns (visible and not grouped)
-    {
-      headerName: "Current",
-      field: "current",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-    {
-      headerName: "Previous",
-      field: "previous",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-    {
-      headerName: "Deal Type",
-      field: "dealType",
-      enableRowGroup: true,
-    },
-    {
-      headerName: "Bid",
-      field: "bidFlag",
-      width: 100,
-    },
-    {
-      headerName: "PL 1",
-      field: "pl1",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-    {
-      headerName: "PL 2",
-      field: "pl2",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-    {
-      headerName: "Gain-DX",
-      field: "gainDx",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-    {
-      headerName: "SX / PX",
-      field: "sxPx",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-    {
-      headerName: "99 Out",
-      field: "_99Out",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-    {
-      headerName: "Submitter ID",
-      field: "submitterID",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-    {
-      headerName: "Submitted Deal ID",
-      field: "submitterDealID",
-      width: 200,
-      aggFunc: "sum",
-      enableValue: true,
-      cellClass: "number",
-      valueFormatter: numberCellFormatter,
-      cellRenderer: "agAnimateShowChangeCellRenderer",
-    },
-  ]);
   const getRowId = useMemo<GetRowIdFunc>(() => {
     return (params: GetRowIdParams) => {
-      return params.data.trade;
+      return params.data.symbol;
     };
   }, []);
+
   const defaultColDef = useMemo<ColDef>(() => {
     return {
       width: 120,
@@ -218,11 +98,8 @@ const GridExample = () => {
       width: 250,
     };
   }, []);
-
   const onGridReady = useCallback((params: GridReadyEvent) => {
-    getData();
-    params.api.setGridOption("rowData", globalRowData);
-    startFeed(params.api);
+    params.api.setGridOption("rowData", pos);
   }, []);
 
   const onAsyncTransactionsFlushed = useCallback(

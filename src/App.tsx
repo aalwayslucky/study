@@ -1,11 +1,12 @@
 import { DevTools } from "jotai-devtools";
 import SubscribtionComp from "./components/exchange/Subscribtion";
 import { useAtomValue } from "jotai";
-import { RunExchange, exchangeAtom } from "./components/exchange/exchange";
+import { useRunExchange, exchangeAtom } from "./components/exchange/exchange";
 function App() {
+  const exchange = useRunExchange();
+
   return (
     <>
-      <RunExchange />
       <DevTools />
       <SubscribtionComp />
     </>

@@ -1,0 +1,52 @@
+
+
+
+.ag-theme-quartz {
+    --ag-background-color: var(--card);
+    --ag-header-height: 25px;
+    --ag-grid-size: 5px;
+    --ag-list-item-height: 20px;
+    --ag-header-color:white;
+    --ag-header-foreground-color: rgb(0, 0, 0);
+    --ag-row-border-style: solid;
+    --ag-row-border-color: hsl(var(--primary-foreground));
+    --ag-row-border-width: 1px;
+    --ag-header-foreground-color:hsl(var(--primary));
+    --ag-header-background-color:hsl(var(--primary-foreground));
+    --ag-selected-row-background-color:hsl(var(--primary-foreground));
+  
+    --ag-foreground-color:var(--primary);
+    --ag-borders:none;
+    --ag-row-hover-color:hsl(var(--primary-foreground));
+  
+    --ag-header-cell-moving-background-color: rgb(218, 0, 0);
+  
+  }
+  
+  
+  
+  
+   
+  
+   
+  /* width */
+  ::-webkit-scrollbar {
+      width: 5px;
+  }
+   
+  /* Track */
+  ::-webkit-scrollbar-track {
+      background: #090D11;
+      width: 6px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 7px;
+  }
+   
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+  }

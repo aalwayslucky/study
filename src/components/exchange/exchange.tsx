@@ -18,7 +18,8 @@ if (!API_KEY || !API_SECRET) {
 
 export const exchangeAtom = atom<Exchange | null>(null);
 
-export const RunExchange = () => {
+export const useRunExchange = () => {
+  console.log("useRunExchange is running");
   const setExchange = useSetAtom(exchangeAtom);
   const [exchange, setLocalExchange] = useState<Exchange | null>(null);
 
@@ -37,19 +38,4 @@ export const RunExchange = () => {
       _exchange.dispose();
     };
   }, []);
-  const [isLoaded, setIsLoaded] = useState(exchange?.store.loaded.orders);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (exchange) {
-        setIsLoaded(exchange.store.loaded.orders);
-      }
-    }, 1000); // Check every second
-
-    // Clean up on unmount
-    return () => clearInterval(interval);
-  }, []);
-  if (!isLoaded) {
-    return <div>Loading...</div>;
-  }
 };

@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { orders } from "./Subscribtion";
+import { orders } from "../../atoms/myAtoms";
 
 // OrdersLenght is a functional component that displays the number of orders.
 const OrdersLenght = () => {
