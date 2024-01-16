@@ -1,34 +1,36 @@
 import { exchangeAtom } from "@/components/exchange/exchange";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { apiAtom } from "@/atoms/myAtoms";
-import { CalculatedData, NimbusTable } from "@/types";
+import { NimbusTable } from "@/types";
 import { useEffect, useState } from "react";
-import { Position, Ticker } from "safe-cex/dist/types";
+import { Ticker } from "safe-cex/dist/types";
 import { GridApi } from "ag-grid-community";
 import symbolInfo from "./symbolData.json";
 
 // hook that will update the orders in AgGridReact based on the ordersAtom state
 export const useUpdateOrdersCalc = () => {
-  console.log("useUpdatePositions");
+  console.log("useUpdateOrdersCalc");
   const [exchange, setExchange] = useAtom(exchangeAtom);
   const api = useAtomValue(apiAtom);
-  const onPositionUpdate = (api: GridApi<NimbusTable>) => {
+  const onOrderUpdate = (api: GridApi<NimbusTable>) => {
     console.log("onOrdersUpdate");
-    console.log("api", api);
     if (!api) {
       return;
     }
 
     if (exchange?.store.tickers) {
-      const updateRecords: NimbusTable[] = [];
+      // console.log("exchange?.store.tickers", exchange?.store.tickers);
       const tickers = exchange.store.tickers;
       const newData: NimbusTable[] = calculateDataWithTickers(tickers, api);
+      // console.log("newData", newData);
+      const updateRecords: NimbusTable[] = [];
+
       api.forEachNode((node) => {
         if (node.data) {
           const position = node.data;
           let symbol = position.symbol;
-          const newPosition = exchange.store.tickers.find(
-            (p: Ticker) => p.symbol === symbol
+          const newPosition = newData.find(
+            (p: NimbusTable) => p.symbol === symbol
           );
           if (!newPosition) {
             return;
@@ -36,45 +38,38 @@ export const useUpdateOrdersCalc = () => {
 
           updateRecords.push({
             ...position,
-            firstBidpct:
-              newData.find((d) => d.symbol === position.symbol)?.firstBidpct ||
-              0,
-            lastBidpct:
-              newData.find((d) => d.symbol === position.symbol)?.lastBidpct ||
-              0,
-            circsupply:
-              newData.find((d) => d.symbol === position.symbol)?.circsupply ||
-              0,
-            returnc:
-              newData.find((d) => d.symbol === position.symbol)?.returnc || 0,
-            funding:
-              newData.find((d) => d.symbol === position.symbol)?.funding || 0,
+
+            funding: newPosition.funding,
+            returnc: newPosition.returnc,
+            circsupply: newPosition.circsupply,
+            firstBidpct: newPosition.firstBidpct,
+            lastBidpct: newPosition.lastBidpct,
           });
         }
       });
-      console.log("updateRecords", updateRecords);
-      const response = api.applyTransactionAsync({
+      api.applyTransactionAsync({
         update: updateRecords,
       });
-      console.log("response", response);
+      console.log("api", api);
+      console.log("updateRecords", updateRecords);
     }
   };
   const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
-    console.log("useEffect positions");
+    console.log("useEffect useUpdateOrdersCalc");
     const interval = setInterval(() => {
       console.log("setInterval");
       if (!api) {
         console.log("api is undefined, not calling onPositionUpdate");
         return;
       }
-      onPositionUpdate(api);
+      onOrderUpdate(api);
       setIsUpdating(true);
-    }, 5000);
+    }, 500);
 
     return () => {
-      console.log("useEffect return");
+      console.log("ERROR: useEffect return");
       clearInterval(interval);
       setIsUpdating(false);
     };
@@ -105,14 +100,14 @@ const calculateDataWithTickers = (
       tppercentagepos: 0,
     };
 
-    console.log("pos", pos);
-    console.log("pos.data", pos.data);
+    // console.log("pos", pos);
+    // console.log("pos.data", pos.data);
     if (pos.data && pos) {
       data.lastBid = pos.data.lastBid;
       const ticker = tickers.find(
         (ticker) => ticker.symbol === pos.data?.symbol
       );
-      console.log("ticker", ticker);
+      // console.log("ticker", ticker);
       if (ticker) {
         data.lastPrice = ticker.last;
 
@@ -123,7 +118,7 @@ const calculateDataWithTickers = (
         if (pos.data?.lastBid !== 0) {
           data.lastBidpct = (pos.data?.lastBid / ticker.last - 1) * 100;
         }
-        console.log("pos.data?.sl", pos.data?.lastBid);
+        // console.log("pos.data?.sl", pos.data?.lastBid);
         if (pos.data?.sl !== null) {
           data.distanceslPercentage = (pos.data?.sl / data.lastPrice - 1) * 100;
         }

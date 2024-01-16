@@ -17,9 +17,7 @@ const ApiComp = () => {
     <div>
       <Button
         onClick={() => {
-          api?.forEachNode((node) => {
-            console.log(node.data);
-          });
+          console.log(api);
         }}
       >
         Log Api

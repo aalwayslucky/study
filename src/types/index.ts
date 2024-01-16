@@ -44,12 +44,3 @@ export interface NimbusTable {
     yPrice: number;
     yReturn?: number;
   }
-  export interface CalculatedData {
-    symbol: string;
-    sl: number;
-    firstBid: number | null;
-    lastBid: number | null;
-    circsupply: number;
-    returnc: number;
-    funding: number;
-}

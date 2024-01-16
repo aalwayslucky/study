@@ -158,11 +158,8 @@ export const columnDefs: ColDef[] = [
   },
   {
     field: "returnc",
-
-    headerName: "24h%",
+    headerName: "returnc",
     minWidth: 75,
-    filter: "agNumberColumnFilter",
-    filterParams: {},
   },
   {
     field: "wReturn",
@@ -191,9 +188,7 @@ export const columnDefs: ColDef[] = [
 
   {
     field: "funding",
-    headerName: "F",
-    filter: "agNumberColumnFilter",
-    filterParams: {},
+    headerName: "funding",
     minWidth: 75,
   },
 ];

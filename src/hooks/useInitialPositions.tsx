@@ -11,7 +11,7 @@ export const useInitialPositions = () => {
   const newpositions: NimbusTable[] =
     positions?.map((position: Position) => ({
       ...position,
-      unrealizedPnl: Number(position.unrealizedPnl.toFixed(0)),
+      unrealizedPnl: 0,
       sl: 0,
       sumbid: 0,
       sumamount: 0,
@@ -30,6 +30,12 @@ export const useInitialPositions = () => {
       unrealizedPnlPct: 0,
       firstTP: 0,
       lastTP: 0,
+      firstBidpct: 0,
+      lastBidpct: 0,
+      slpct: 0, // added
+      dPrice: 0, // added
+      wPrice: 0, // added
+      yPrice: 0, // added
     })) || [];
 
   return newpositions;

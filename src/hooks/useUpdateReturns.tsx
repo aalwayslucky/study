@@ -57,7 +57,7 @@ export const useUpdateReturns = () => {
     const interval = setInterval(() => {
       // console.log("setInterval");
       if (!api) {
-        console.log("api is undefined, not calling onPositionUpdate");
+        console.log("ERROR: api is undefined, not calling onPositionUpdate");
         return;
       }
       onPositionUpdate(api);
@@ -65,7 +65,7 @@ export const useUpdateReturns = () => {
     }, 1000);
 
     return () => {
-      console.log("useEffect return");
+      console.log("ERROR: useEffect return - not updating positions");
       clearInterval(interval);
       setIsUpdating(false);
     };
@@ -80,7 +80,9 @@ const calculateReturns = (tickers: Ticker[]) => {
   );
 
   if (!storedData) {
-    console.log("storedData is null");
+    console.log(
+      "storedData is not found in localStorage - not updating returns"
+    );
     return;
   }
 

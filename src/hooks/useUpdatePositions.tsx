@@ -58,7 +58,7 @@ export const useUpdatePositions = () => {
     const interval = setInterval(() => {
       // console.log("setInterval");
       if (!api) {
-        console.log("api is undefined, not calling onPositionUpdate");
+        console.log("ERROR: api is undefined, not calling onPositionUpdate");
         return;
       }
       onPositionUpdate(api);
@@ -66,7 +66,7 @@ export const useUpdatePositions = () => {
     }, 1000);
 
     return () => {
-      console.log("useEffect return");
+      console.log("ERROR: useEffect return");
       clearInterval(interval);
       setIsUpdating(false);
     };

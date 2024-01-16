@@ -47,7 +47,7 @@ export const useUpdateOrders = () => {
     onOrdersUpdate();
     setIsUpdating(true);
     return () => {
-      console.log("useEffect return");
+      console.log("ERROR: useEffect return");
       setIsUpdating(false);
     };
   }, [ordersLenght, api]);

@@ -6,11 +6,10 @@ import { useRenderCount } from "@uidotdev/usehooks";
 import GridExample from "./Table";
 import { useUpdateOrders } from "@/hooks/useUpdateOrders";
 import { useUpdatePositions } from "@/hooks/useUpdatePositions";
-import PositionsUpdate from "./PositionsUpdate";
 import ApiComp from "./apicomp";
 import { useUpdateOrdersCalc } from "@/hooks/useUpdateOrdersCalc";
 import Fetcher from "./Fetcher";
-import { useUpdateReturns } from "@/hooks/useUpdatePositions copy";
+import { useUpdateReturns } from "@/hooks/useUpdateReturns";
 const SubscribtionComp = () => {
   const renderCount = useRenderCount();
   console.log("SubscribtionComp:", renderCount);

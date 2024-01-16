@@ -17,12 +17,11 @@ import {
 import { useRenderCount } from "@uidotdev/usehooks";
 
 import { columnDefs } from "./columdefs";
-import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
+import { useSetAtom } from "jotai";
 import { apiAtom } from "../../atoms/myAtoms";
-import { useGetPosition } from "@/hooks/useGetPositions";
+
 import { useInitialPositions } from "@/hooks/useInitialPositions";
 import { NimbusTable } from "@/types";
-import { useUpdatePositions } from "@/hooks/useUpdatePositions";
 
 const GridExample = () => {
   // const [pos] = useAtom(positions);
@@ -95,7 +94,7 @@ const GridExample = () => {
             ref={gridRef}
             columnDefs={columnDefs}
             suppressAggFuncInHeader={true}
-            asyncTransactionWaitMillis={500}
+            asyncTransactionWaitMillis={1000}
             getRowId={getRowId}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}
