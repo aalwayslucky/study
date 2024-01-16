@@ -127,10 +127,24 @@ export const columnDefs: ColDef[] = [
     minWidth: 75,
   },
   {
+    field: "firstBidpct",
+    filter: "agTextColumnFilter",
+    filterParams: {},
+    headerName: "FBid%",
+    minWidth: 75,
+  },
+  {
     field: "lastBid",
     filter: "agTextColumnFilter",
     filterParams: {},
     headerName: "LBid",
+    minWidth: 75,
+  },
+  {
+    field: "lastBidpct",
+    filter: "agTextColumnFilter",
+    filterParams: {},
+    headerName: "LBid%",
     minWidth: 75,
   },
   {

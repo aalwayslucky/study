@@ -8,6 +8,9 @@ import { useUpdateOrders } from "@/hooks/useUpdateOrders";
 import { useUpdatePositions } from "@/hooks/useUpdatePositions";
 import PositionsUpdate from "./PositionsUpdate";
 import ApiComp from "./apicomp";
+import { useUpdateOrdersCalc } from "@/hooks/useUpdateOrdersCalc";
+import Fetcher from "./Fetcher";
+import { useUpdateReturns } from "@/hooks/useUpdatePositions copy";
 const SubscribtionComp = () => {
   const renderCount = useRenderCount();
   console.log("SubscribtionComp:", renderCount);
@@ -15,6 +18,9 @@ const SubscribtionComp = () => {
   const loaded = useAtomValue(isLoaded);
   const isupdatingOrders = useUpdateOrders();
   const isupdatingPositions = useUpdatePositions();
+  const isupdatingOrdersCalc = useUpdateOrdersCalc();
+  const isupdatingReturns = useUpdateReturns();
+
   if (!loaded) {
     return <div>loading...</div>;
   }
@@ -23,6 +29,7 @@ const SubscribtionComp = () => {
     <>
       <OrdersLenght />
       <ApiComp />
+      <Fetcher />
       {/* <UpdateTable /> */}
       <div>{isupdatingOrders ? "Updating Orders" : "Not Updating Orders"}</div>
       <GridExample />

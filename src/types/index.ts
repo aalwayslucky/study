@@ -10,6 +10,7 @@ export interface NimbusTable {
     contracts: number;
     liquidationPrice: number;
     sl: number;
+    slpct: number;
     sumbid: number;
     sumamount: number;
     loss: number;
@@ -28,10 +29,21 @@ export interface NimbusTable {
     dReturn: number;
     unrealizedPnlPct: number;
     firstTP: number;
-    lastTP: number;
+    dPrice: number;
+    wPrice: number;
+    yPrice: number;
+        lastTP: number;
   }
 
-
+  export interface YWDReturns {
+    symbol: string;
+    wPrice: number;
+    wReturn?: number;
+    dPrice: number;
+    dReturn?: number;
+    yPrice: number;
+    yReturn?: number;
+  }
   export interface CalculatedData {
     symbol: string;
     sl: number;

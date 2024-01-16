@@ -10,7 +10,7 @@ import { ordersLenghtAtom } from "@/atoms/myAtoms";
 
 // hook that will update the orders in AgGridReact based on the ordersAtom state
 export const useUpdateOrders = () => {
-  console.log("useUpdateOrders");
+  // console.log("useUpdateOrders");
 
   const orders = useAtomValue(ordersAtom);
   const api = useAtomValue(apiAtom);
@@ -39,11 +39,11 @@ export const useUpdateOrders = () => {
     const response = api.applyTransactionAsync({
       update: updateRecords,
     });
-    console.log("response", response);
+    // console.log("response", response);
   };
   const [isUpdating, setIsUpdating] = useState(false);
   useEffect(() => {
-    console.log("useEffect");
+    // console.log("useEffect");
     onOrdersUpdate();
     setIsUpdating(true);
     return () => {
@@ -59,9 +59,9 @@ const calculateDataWithOrders = (
   orders: Order[],
   api: GridApi<NimbusTable> | null
 ) => {
-  console.log("new orders");
+  // console.log("new orders");
   // const startTime = performance.now();
-  console.log("api", api);
+  // console.log("api", api);
   let tempData: NimbusTable[] = [];
 
   // Create a map of orders by symbol
@@ -179,6 +179,6 @@ const calculateDataWithOrders = (
   // console.log(tempData);
   // const endTime = performance.now();
   // console.log(`Execution time: ${endTime - startTime} milliseconds`);
-  console.log("tempData");
+  // console.log("tempData");
   return tempData;
 };
