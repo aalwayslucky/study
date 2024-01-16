@@ -22,6 +22,7 @@ import { apiAtom } from "../../atoms/myAtoms";
 import { useGetPosition } from "@/hooks/useGetPositions";
 import { useInitialPositions } from "@/hooks/useInitialPositions";
 import { NimbusTable } from "@/types";
+import { useUpdatePositions } from "@/hooks/useUpdatePositions";
 
 const GridExample = () => {
   // const [pos] = useAtom(positions);
@@ -69,8 +70,9 @@ const GridExample = () => {
   }, []);
 
   const setApi = useSetAtom(apiAtom);
+  const [api, setApi2] = useState<GridApi<NimbusTable>>();
   const initialPositions = useInitialPositions();
-  console.log("initialPositions:", initialPositions);
+  // console.log("initialPositions:", initialPositions);
 
   const onGridReady = useCallback((params: GridReadyEvent) => {
     setApi(params.api as GridApi<NimbusTable>);
@@ -93,7 +95,7 @@ const GridExample = () => {
             ref={gridRef}
             columnDefs={columnDefs}
             suppressAggFuncInHeader={true}
-            asyncTransactionWaitMillis={4000}
+            asyncTransactionWaitMillis={500}
             getRowId={getRowId}
             defaultColDef={defaultColDef}
             autoGroupColumnDef={autoGroupColumnDef}

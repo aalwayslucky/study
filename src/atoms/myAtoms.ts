@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { Order, StoreData } from "safe-cex/dist/types";
+import { Order, Position, StoreData } from "safe-cex/dist/types";
 import { exchangeAtom } from "../components/exchange/exchange";
 import { atomEffect } from 'jotai-effect'
 import {
@@ -8,13 +8,14 @@ import {
 
 } from "ag-grid-community";
 import { NimbusTable } from "@/types";
+import { throttle } from "lodash";
 
 
 
 export const exchangeDataAtom = atom<StoreData | null>(null);
 
 export const subscribeAtomEffect = atomEffect((get, set) => {
-  console.log("subscribeAtomEffect is running");
+  // console.log("subscribeAtomEffect is running");
   if (!exchangeDataAtom) {
     return;
   }
@@ -32,7 +33,7 @@ export const subscribeAtomEffect = atomEffect((get, set) => {
 
     return () => {
       if (unsubscribe) {
-        console.log("Unsubscribing");
+        // console.log("Unsubscribing");
         unsubscribe();
       }
     };
@@ -48,6 +49,13 @@ export const ordersAtom = atom<Order[]>((get) => {
   return [];
 });
 
+export const ordersLenghtAtom = atom((get) => {
+  const exchangeData = get(exchangeDataAtom);
+  if (exchangeData) {
+    return exchangeData.orders.length;
+  }
+  return 0;
+});
 
 
 export const apiAtom = atom<GridApi<NimbusTable> | null>(null);
@@ -60,23 +68,30 @@ export const isLoaded = atom((get) => {
     return false;
   });
   
-// atom for positions
-export const positions = atom((get) => {
+export const positions = atom<Position[]>((get) => {
   const exchangeData = get(exchangeDataAtom);
   if (exchangeData) {
     return exchangeData.positions;
   }
   return [];
 });
+// atom for positions
+
+export const positionsAtom = atom(positions); // positions here is an array
+export const positionsSnapshotAtom = atom<Position[]>([]);
+
+// This is a write-only atom that updates positionsSnapshotAtom with the current value of positionsAtom.
+export const updatePositionsSnapshotAtom = atom(
+  null,
+  (get, set) => {
+    const exchangeData = get(exchangeDataAtom);
+    if (exchangeData) {
+
+    set(positionsSnapshotAtom, exchangeData.positions);
+  }
+  }
+);
 
 // create atom for positionsStable that will be copy of positions and will not update on change
 
-
-export const positionsStable = atom((get) => {
-  const exchangeData = get(exchangeDataAtom);
-  if (exchangeData) {
-    return exchangeData.positions;
-  }
-  return [];
-});
 

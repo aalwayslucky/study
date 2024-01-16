@@ -1,18 +1,29 @@
 import { useAtomValue } from "jotai";
-import { ordersLenghtAtom } from "../../atoms/myAtoms";
+import { apiAtom } from "../../atoms/myAtoms";
 import { useRenderCount } from "@uidotdev/usehooks";
+import { Button } from "../ui/button";
 
 // OrdersLenght is a functional component that displays the number of orders.
-const OrdersLenght = () => {
+const ApiComp = () => {
   // Log a message to the console for debugging purposes.
   const renderCount = useRenderCount();
   console.log("OrdersLenght:", renderCount);
 
   // Use the useAtomValue hook to get the current value of the orders.
-  const ordersCount = useAtomValue(ordersLenghtAtom);
+  const api = useAtomValue(apiAtom);
 
   // Return a JSX element that displays the number of orders.
-  return <div>Orders:{ordersCount}</div>;
+  return (
+    <div>
+      <Button
+        onClick={() => {
+          console.log(api);
+        }}
+      >
+        Log Api
+      </Button>
+    </div>
+  );
 };
 
-export default OrdersLenght;
+export default ApiComp;

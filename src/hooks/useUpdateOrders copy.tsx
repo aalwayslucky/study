@@ -57,8 +57,8 @@ const calculateDataWithOrders = (
   api: GridApi<NimbusTable> | null
 ) => {
   console.log("new orders");
-  // const startTime = performance.now();
-  console.log("api", api);
+  const startTime = performance.now();
+
   let tempData: NimbusTable[] = [];
 
   // Create a map of orders by symbol
@@ -172,10 +172,10 @@ const calculateDataWithOrders = (
       });
     }
   });
-  // console.log("tempData");
-  // console.log(tempData);
-  // const endTime = performance.now();
-  // console.log(`Execution time: ${endTime - startTime} milliseconds`);
+  console.log("tempData");
+  console.log(tempData);
+  const endTime = performance.now();
+  console.log(`Execution time: ${endTime - startTime} milliseconds`);
 
   return tempData;
 };
