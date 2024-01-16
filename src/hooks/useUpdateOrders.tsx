@@ -19,19 +19,22 @@ export const useUpdateOrders = () => {
     if (!api) {
       return;
     }
-    const updateRecords: NimbusTable[] = [];
 
-    const newData = calculateDataWithOrders(orders, api);
+    const newData: NimbusTable[] = calculateDataWithOrders(orders, api);
 
-    api.forEachNode((node) => {
-      if (node.data) {
-        const position = node.data;
-        let symbol = position.symbol;
-        updateRecords.push({
-          ...position,
-          sumbid: newData.find((pos) => pos.symbol === symbol)?.sumbid ?? 0,
-        });
-      }
+    let updateRecords: NimbusTable[] = newData.map((data) => {
+      return {
+        ...data,
+        sumbid: data.sumbid ?? 0,
+        sumamount: parseFloat(data.sumamount.toFixed(0)) ?? 0,
+        loss: parseFloat(data.loss.toFixed(0)) ?? 0,
+        profit: parseFloat(data.profit.toFixed(0)) ?? 0,
+        tpPctOfPos: parseFloat(data.tpPctOfPos.toFixed(0)) ?? 0,
+        firstBid: data.firstBid ?? 0,
+        lastBid: data.lastBid ?? 0,
+        firstTP: data.firstTP ?? 0,
+        lastTP: data.lastTP ?? 0,
+      };
     });
     const response = api.applyTransactionAsync({
       update: updateRecords,
@@ -176,6 +179,6 @@ const calculateDataWithOrders = (
   // console.log(tempData);
   // const endTime = performance.now();
   // console.log(`Execution time: ${endTime - startTime} milliseconds`);
-
+  console.log("tempData");
   return tempData;
 };

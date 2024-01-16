@@ -16,7 +16,9 @@ export interface NimbusTable {
     profit: number;
     tpPctOfPos: number;
     firstBid: number;
+    firstBidpct: number;
     lastBid: number;
+    lastBidpct: number;
     circsupply: number;
     liq: number;
     returnc: number;
@@ -28,3 +30,14 @@ export interface NimbusTable {
     firstTP: number;
     lastTP: number;
   }
+
+
+  export interface CalculatedData {
+    symbol: string;
+    sl: number;
+    firstBid: number | null;
+    lastBid: number | null;
+    circsupply: number;
+    returnc: number;
+    funding: number;
+}
