@@ -4,7 +4,7 @@ import { subscribeAtomEffect } from "../../atoms/myAtoms";
 import { isLoaded } from "../../atoms/myAtoms";
 import { useRenderCount } from "@uidotdev/usehooks";
 import GridExample from "./Table";
-import StartFeed from "../exchangeButtons/StartFeed";
+import UpdateTable from "../exchangeButtons/UpdateTable";
 const SubscribtionComp = () => {
   const renderCount = useRenderCount();
   console.log("SubscribtionComp:", renderCount);
@@ -17,8 +17,8 @@ const SubscribtionComp = () => {
 
   return (
     <>
-      <OrdersLenght />
-      <StartFeed />
+      {/* <OrdersLenght /> */}
+      <UpdateTable />
       <GridExample />
     </>
   );

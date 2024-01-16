@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { StoreData } from "safe-cex/dist/types";
+import { Order, StoreData } from "safe-cex/dist/types";
 import { exchangeAtom } from "../components/exchange/exchange";
 import { atomEffect } from 'jotai-effect'
 import {
@@ -7,6 +7,7 @@ import {
   GridApi
 
 } from "ag-grid-community";
+import { NimbusTable } from "@/types";
 
 
 
@@ -39,14 +40,17 @@ export const subscribeAtomEffect = atomEffect((get, set) => {
     console.log("exchange.store does not exist");
   }
 });
-export const orders = atom((get) => {
+export const ordersAtom = atom<Order[]>((get) => {
   const exchangeData = get(exchangeDataAtom);
   if (exchangeData) {
-    return exchangeData.orders.length;
+    return exchangeData.orders;
   }
-  return 0;
+  return [];
 });
-export const apiAtom = atom<GridApi | null>(null);
+
+
+
+export const apiAtom = atom<GridApi<NimbusTable> | null>(null);
 
 export const isLoaded = atom((get) => {
     const exchangeData = get(exchangeDataAtom);

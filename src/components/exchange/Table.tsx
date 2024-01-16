@@ -1,6 +1,6 @@
 "use strict";
 
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -11,6 +11,7 @@ import {
   ColDef,
   GetRowIdFunc,
   GetRowIdParams,
+  GridApi,
   GridReadyEvent,
 } from "ag-grid-community";
 import { useRenderCount } from "@uidotdev/usehooks";
@@ -20,12 +21,15 @@ import { atom, useAtom, useAtomValue, useSetAtom } from "jotai";
 import { apiAtom } from "../../atoms/myAtoms";
 import { useGetPosition } from "@/hooks/useGetPositions";
 import { useInitialPositions } from "@/hooks/useInitialPositions";
+import { NimbusTable } from "@/types";
 
 const GridExample = () => {
   // const [pos] = useAtom(positions);
   const renderCount = useRenderCount();
   console.log("GridExample:", renderCount);
-  const gridRef = useRef<AgGridReact>(null);
+  const gridRef = useRef<AgGridReact<NimbusTable>>(null);
+  const [rowData, setRowData] = useState<NimbusTable[]>([]); // Initialize rowData with an empty array
+
   const containerStyle = useMemo(
     () => ({ width: "1000px", height: "700px" }),
     []
@@ -67,10 +71,11 @@ const GridExample = () => {
   const setApi = useSetAtom(apiAtom);
   const initialPositions = useInitialPositions();
   console.log("initialPositions:", initialPositions);
-  const onGridReady = useCallback((params: GridReadyEvent) => {
-    setApi(params.api);
-    params.api.setGridOption("rowData", initialPositions);
 
+  const onGridReady = useCallback((params: GridReadyEvent) => {
+    setApi(params.api as GridApi<NimbusTable>);
+    // need to add
+    setRowData(initialPositions);
     // Save the api when the grid is ready
   }, []);
 
@@ -84,6 +89,7 @@ const GridExample = () => {
 
         <div style={gridStyle} className={"ag-theme-quartz-dark"}>
           <AgGridReact
+            rowData={rowData}
             ref={gridRef}
             columnDefs={columnDefs}
             suppressAggFuncInHeader={true}
