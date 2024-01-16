@@ -2,6 +2,11 @@ import { atom } from "jotai";
 import { StoreData } from "safe-cex/dist/types";
 import { exchangeAtom } from "../components/exchange/exchange";
 import { atomEffect } from 'jotai-effect'
+import {
+
+  GridApi
+
+} from "ag-grid-community";
 
 
 
@@ -41,6 +46,7 @@ export const orders = atom((get) => {
   }
   return 0;
 });
+export const apiAtom = atom<GridApi | null>(null);
 
 export const isLoaded = atom((get) => {
     const exchangeData = get(exchangeDataAtom);
@@ -50,8 +56,19 @@ export const isLoaded = atom((get) => {
     return false;
   });
   
-
+// atom for positions
 export const positions = atom((get) => {
+  const exchangeData = get(exchangeDataAtom);
+  if (exchangeData) {
+    return exchangeData.positions;
+  }
+  return [];
+});
+
+// create atom for positionsStable that will be copy of positions and will not update on change
+
+
+export const positionsStable = atom((get) => {
   const exchangeData = get(exchangeDataAtom);
   if (exchangeData) {
     return exchangeData.positions;
